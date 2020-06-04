@@ -115,7 +115,7 @@ if [ ! -f $TMPWD/roundcubemail-$to_roundcube_version-complete.tar.gz ];then
   exit 99
 fi
 
-tar -C $TMPWD -zxvf $TMPWD/roundcubemail-*.tar.gz
+tar -C $TMPWD -zxvf $TMPWD/roundcubemail-$to_roundcube_version-complete.tar.gz
 if [ $? -ne 0 ];then
   echo "Failed to decompress the roundcube TARGZ"
   exit 99
