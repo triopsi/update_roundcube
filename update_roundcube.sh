@@ -1,7 +1,7 @@
 #!/bin/bash
 #---------------------------------------------------------------------
 # Script: update_roundcube.sh
-# Version: 1.0
+# Version: 1.1
 # Description: Update einer Roundcube Instanz
 # Vorraussetzungen: 
 # - Roundcube existiert schon
@@ -36,7 +36,7 @@ DBBASE=""
 exec > >(tee -i ${APWD}/roundcube_update.log)
 exec 2>&1
 echo 
-echo "Welcome to Roundcube update Setup Script V1.0"
+echo "Welcome to Roundcube update Setup Script V1.1"
 echo "========================================="
 echo "Roundcube updater"
 echo "========================================="
@@ -61,20 +61,28 @@ else
   fi
 fi
 
-RE='^([0-9]{1}\.[0-9]{1}\.[0-9]{1})$'
-while read -r -p "Which Version you will update? (e.g 1.4.0) :" to_roundcube_version && [[ ! $to_roundcube_version =~ $RE ]]; do
-   echo "invalid input. Please try again."
-done
-echo "You will update to the Version $to_roundcube_version"
-echo -n "Is this correct? (y/n) :"
+to_roundcube_version=`wget -q --timeout=60 -O - https://api.github.com/repos/roundcube/roundcubemail/releases/latest | grep -Po '(?<="tag_name": ")([0-9]\.[0-9]\.[0-9]+)'`
+echo -n "Do you want to update to version '$to_roundcube_version' ? (y/n) :"
 read -n 1 -r
 echo -e "\n"    
 RE='^[Yy]$'
 if [[ ! $REPLY =~ $RE ]]; then
-	exit 1
+  RE='^([0-9]{1}\.[0-9]{1}\.[0-9]{1})$'
+  while read -r -p "Which version you will update? (e.g 1.4.0) :" to_roundcube_version && [[ ! $to_roundcube_version =~ $RE ]]; do
+    echo "invalid input. Please try again."
+  done
+  echo "Do you want to update to $to_roundcube_version"
+  echo -n "Is this correct? (y/n) :"
+  read -n 1 -r
+  echo -e "\n"    
+  RE='^[Yy]$'
+  if [[ ! $REPLY =~ $RE ]]; then
+    exit 1
+  fi
 fi
 
-echo -n "Backup the roundcube Instanz?  (y/n) :"
+
+echo -n "Backup the roundcube instanz? (y/n) :"
 read -n 1 -r
 echo -e "\n"    
 RE='^[Yy]$'
